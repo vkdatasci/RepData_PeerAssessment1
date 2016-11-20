@@ -5,30 +5,88 @@
 ```{r}
 unzip("activity.zip")
 d<-read.csv("activity.csv")
-d[["ddate"]]=strptime(d$date,"%Y-%m-%d")
 ```
 
 ## Total number of steps taken each day
 ```{r}
-steps_per_day <- aggregate(steps ~ date, d, sum)
-hist(steps_per_day$steps,col="red",main="Total Steps Taken Each Day",xlab="Steps")
+steps_per_day_sum <- aggregate(steps ~ date, d, sum)
+hist(steps_per_day_sum$steps,col="red",main="Total Steps Taken Each Day",xlab="Steps")
 ```
 
 ### Mean and Median values of steps
 ```{r eval=FALSE}
-mean(steps_per_day$steps)
-median(steps_per_day$steps)
+mean(steps_per_day_sum$steps)
+median(steps_per_day_sum$steps)
 ```
 
-The mean value of the total number of steps taken each day is `r mean(steps_per_day$steps)` and the median value is `r median(steps_per_day$steps)`.
+The mean value of the total number of steps taken each day is `r mean(steps_per_day_sum$steps)` and the median value is `r median(steps_per_day_sum$steps)`.
 
 
-## What is the average daily activity pattern?
+## Average daily activity pattern
+```{r}
+steps_per_interval_mean <- aggregate(steps ~ interval, d, mean)
+plot(steps_per_interval_mean$interval,steps_per_interval_mean$steps,type="l",main="Steps, mean value",xlab="Interval",ylab="Steps, Mean")
+```
 
+### Interval with the maximum number of steps
+
+```{r eval=FALSE}
+max(steps_per_interval_mean$steps)                                  # maximum number of steps
+steps_per_interval_mean[which.max(steps_per_interval_mean$steps),1] # corresponding interval
+```
+
+Maximum number of steps is `r round(max(steps_per_interval_mean$steps),2)`, from the interval `r steps_per_interval_mean[which.max(steps_per_interval_mean$steps),1]`.
 
 
 ## Imputing missing values
+### Total number of rows with NA's
 
+```{r}
+sum(is.na(d))
+```
 
+There are `r sum(is.na(d))` in the given dataset. The chosen strategy to remove "NA" values from the dataset is to replace "NA" for steps with corresponding interval's mean value:
 
-## Are there differences in activity patterns between weekdays and weekends?
+```{r}
+library(plyr)
+impute.mean <- function(x) replace(x, is.na(x), mean(x, na.rm=TRUE))
+d2 <-  ddply(d, ~ interval, transform, steps = impute.mean(steps))
+```
+
+Histogram for the new dataset:
+
+```{r}
+steps_per_day_clean_sum <- aggregate(steps ~ date, d2, sum)
+hist(steps_per_day_clean_sum$steps,col="red",main="Total Steps Taken Each Day",xlab="Steps")
+```
+
+### Mean and Median values of steps
+```{r eval=FALSE}
+mean(steps_per_day_clean_sum$steps)
+median(steps_per_day_clean_sum$steps)
+```
+
+The mean value of the total number of steps taken each day is `r mean(steps_per_day_clean_sum$steps)` and the median value is `r median(steps_per_day_clean_sum$steps)`.
+
+There is no difference between the estimates from the first part of assignment. The chosen strategy has no impact on the computed mean and median values.
+
+## Activity patterns at weekdays and weekends
+```{r message=FALSE}
+library(lubridate)
+data_copy <- d2
+data_copy[["weekdays"]]<-wday(data_copy$date)
+workingdays<-subset(data_copy,weekdays!=6 & weekdays!=7)
+weekend<-subset(data_copy,weekdays==6 | weekdays==7)
+```
+### Weekdays Activity
+```{r}
+workingdays_steps_per_interval_mean <- aggregate(steps ~ interval, workingdays, mean)
+plot(workingdays_steps_per_interval_mean$interval,workingdays_steps_per_interval_mean$steps,type="l",main="Working Days Activity",xlab="Interval",ylab="Steps, Mean")
+```
+### Weekend Activity
+```{r}
+weekend_steps_per_interval_mean <- aggregate(steps ~ interval, weekend, mean)
+plot(weekend_steps_per_interval_mean$interval,weekend_steps_per_interval_mean$steps,type="l",main="Weekend Activity",xlab="Interval",ylab="Steps, Mean")
+```
+
+On working days there is more activity in the earlier hours. The activity at the weekend days is more constant for all intervals.

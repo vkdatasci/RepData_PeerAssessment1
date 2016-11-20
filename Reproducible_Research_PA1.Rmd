@@ -13,6 +13,8 @@ steps_per_day_sum <- aggregate(steps ~ date, d, sum)
 hist(steps_per_day_sum$steps,col="red",main="Total Steps Taken Each Day",xlab="Steps")
 ```
 
+![Total number of steps](./figure/figure1.png)
+
 ### Mean and Median values of steps
 ```{r eval=FALSE}
 mean(steps_per_day_sum$steps)

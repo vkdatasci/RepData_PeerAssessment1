@@ -61,7 +61,7 @@ Histogram for the new dataset:
 
 ```{r}
 steps_per_day_clean_sum <- aggregate(steps ~ date, d2, sum)
-hist(steps_per_day_clean_sum$steps,col="blue",main="Total Steps Taken Each Day",xlab="Steps")
+hist(steps_per_day_clean_sum$steps,col="red",main="Total Steps Taken Each Day",xlab="Steps")
 ```
 
 ![Imputed Dataset Hist](./figure/figure3.png)

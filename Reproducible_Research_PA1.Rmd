@@ -30,6 +30,8 @@ steps_per_interval_mean <- aggregate(steps ~ interval, d, mean)
 plot(steps_per_interval_mean$interval,steps_per_interval_mean$steps,type="l",main="Steps, mean value",xlab="Interval",ylab="Steps, Mean")
 ```
 
+![Average Daily Activity](./figure/figure2.png)
+
 ### Interval with the maximum number of steps
 
 ```{r eval=FALSE}
@@ -59,8 +61,11 @@ Histogram for the new dataset:
 
 ```{r}
 steps_per_day_clean_sum <- aggregate(steps ~ date, d2, sum)
-hist(steps_per_day_clean_sum$steps,col="red",main="Total Steps Taken Each Day",xlab="Steps")
+hist(steps_per_day_clean_sum$steps,col="blue",main="Total Steps Taken Each Day",xlab="Steps")
 ```
+
+![Imputed Dataset Hist](./figure/figure3.png)
+
 
 ### Mean and Median values of steps
 ```{r eval=FALSE}
@@ -87,10 +92,16 @@ workingdays_steps_per_interval_mean <- aggregate(steps ~ interval, workingdays, 
 plot(workingdays_steps_per_interval_mean$interval,workingdays_steps_per_interval_mean$steps,type="l",main="Working Days Activity",xlab="Interval",ylab="Steps, Mean")
 ```
 
+![Average Weekdays Activity](./figure/figure4.png)
+
+
 ### Weekend Activity
 ```{r}
 weekend_steps_per_interval_mean <- aggregate(steps ~ interval, weekend, mean)
 plot(weekend_steps_per_interval_mean$interval,weekend_steps_per_interval_mean$steps,type="l",main="Weekend Activity",xlab="Interval",ylab="Steps, Mean")
 ```
+
+![Average Weekend Activity](./figure/figure5.png)
+
 
 On working days there is more activity in the earlier hours. The activity at the weekend days is more constant for all intervals.

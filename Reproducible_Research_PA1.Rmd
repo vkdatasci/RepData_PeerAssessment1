@@ -4,7 +4,7 @@
 
 ```{r}
 unzip("activity.zip")
-d<-read.csv("activity.csv")
+d<-read.csv("activity.csv",header=TRUE,sep=",")
 ```
 
 ## Total number of steps taken each day
@@ -78,11 +78,13 @@ data_copy[["weekdays"]]<-wday(data_copy$date)
 workingdays<-subset(data_copy,weekdays!=6 & weekdays!=7)
 weekend<-subset(data_copy,weekdays==6 | weekdays==7)
 ```
+
 ### Weekdays Activity
 ```{r}
 workingdays_steps_per_interval_mean <- aggregate(steps ~ interval, workingdays, mean)
 plot(workingdays_steps_per_interval_mean$interval,workingdays_steps_per_interval_mean$steps,type="l",main="Working Days Activity",xlab="Interval",ylab="Steps, Mean")
 ```
+
 ### Weekend Activity
 ```{r}
 weekend_steps_per_interval_mean <- aggregate(steps ~ interval, weekend, mean)
